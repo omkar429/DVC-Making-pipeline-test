@@ -1,29 +1,52 @@
-from pathlib import Path
+import pathlib
+import pandas as pd
+import sys
+import yaml 
 
-from loguru import logger
-from tqdm import tqdm
-import typer
+from sklearn.model_selection import train_test_split
 
-from src.config import PROCESSED_DATA_DIR, RAW_DATA_DIR
+# create dataset
 
-app = typer.Typer()
+def data_set(data_path):
+    df = pd.read_csv(data_path)
+    return df
 
 
-@app.command()
-def main(
-    # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
-    input_path: Path = RAW_DATA_DIR / "dataset.csv",
-    output_path: Path = PROCESSED_DATA_DIR / "dataset.csv",
-    # ----------------------------------------------
-):
-    # ---- REPLACE THIS WITH YOUR OWN CODE ----
-    logger.info("Processing dataset...")
-    for i in tqdm(range(10), total=10):
-        if i == 5:
-            logger.info("Something happened for iteration 5.")
-    logger.success("Processing dataset complete.")
-    # -----------------------------------------
+# split data
+
+def split_data(data, test_size, seed):
+    train, test = train_test_split(data, test_size=test_size,random_state=seed)
+    return train, test
+
+
+# save data
+def save_data(train, test, path):
+    pathlib.Path(path).mkdir(parents=True, exist_ok=True)
+    train.to_csv(path + '/train.csv', index=False)
+    test.to_csv(path + '/test.csv', index=False)
+# main
+
+def main():
+    curr_path = pathlib.Path(__file__)
+    home_dirr = curr_path.parent.parent
+    input_file = sys.argv[1]
+    data_path = home_dirr.as_posix() + input_file
+    output_file = sys.argv[2]
+    output_path = home_dirr.as_posix() + output_file
+
+    params_file = home_dirr.as_posix() + '/params.yaml'
+    params = yaml.safe_load(open(params_file))['split_data']
+
+
+    data = data_set(data_path)
+    train, test = split_data(data=data, test_size=params['test_size'], seed=params['seed'])
+
+    save_data(train=train, test=test, path=output_path)
+
+
+
+
 
 
 if __name__ == "__main__":
-    app()
+    main()
