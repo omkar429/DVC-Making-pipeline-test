@@ -35,7 +35,7 @@ def main():
     output_path = home_dirr.as_posix() + '/data/processed'
 
     params_file = home_dirr.as_posix() + '/params.yaml'
-    params = yaml.safe_load(open(params_file))['split_data']
+    params = yaml.safe_load(open(params_file))['make_dataset']
 
 
     data = data_set(data_path)

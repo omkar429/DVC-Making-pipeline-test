@@ -1,10 +1,23 @@
 stages:
   make_datasets:
-    cmd: python .\src\dataset.py .\data\row\creditcard.csv 
+    cmd: python ./src/dataset.py ./data/row/creditcard.csv 
     deps:
-    - .\data\row\creditcard.csv
-    - .\src\dataset.py
+    - ./data/row/creditcard.csv
+    - ./src/dataset.py
+    - ./params.yaml
     params:
-    - make_dataset.test_split
+    - make_dataset.test_size
     - make_dataset.seed
  
+
+  train_model:
+    cmd: python ./src/modeling/train.py /data/processed/train.csv /models/ /params.yaml
+    deps:
+    - ./src/modeling/train.py
+    - /data/processed/train.csv
+    - ./params.yaml
+    params:
+    - train_model.n_estimators
+    - train_model.reg_lambda
+    outs:
+    - /models/
