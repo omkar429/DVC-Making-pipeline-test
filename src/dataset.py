@@ -31,8 +31,8 @@ def main():
     home_dirr = curr_path.parent.parent
     input_file = sys.argv[1]
     data_path = home_dirr.as_posix() + input_file
-    output_file = sys.argv[2]
-    output_path = home_dirr.as_posix() + output_file
+   
+    output_path = home_dirr.as_posix() + '/data/processed'
 
     params_file = home_dirr.as_posix() + '/params.yaml'
     params = yaml.safe_load(open(params_file))['split_data']
