@@ -9,8 +9,8 @@ stages:
       size: 150828752
     - path: ./params.yaml
       hash: md5
-      md5: d8c8c13791f2853f03f461465e0cbe52
-      size: 101
+      md5: 7e8377eee621edde50758afb89185bf6
+      size: 201
     - path: ./src/dataset.py
       hash: md5
       md5: 67c4b9e1a0297d3bb153f73e60b87f45
@@ -19,3 +19,28 @@ stages:
       params.yaml:
         make_dataset.seed: 42
         make_dataset.test_size: 0.3
+  train_model:
+    cmd: python ./src/modeling/train.py ./data/processed/train.csv ./models/
+    deps:
+    - path: ./data/processed/train.csv
+      hash: md5
+      md5: 54ae2bec7f8ed8794d4c15abc5ea0120
+      size: 105772339
+    - path: ./params.yaml
+      hash: md5
+      md5: 7e8377eee621edde50758afb89185bf6
+      size: 201
+    - path: ./src/modeling/train.py
+      hash: md5
+      md5: bc469086fb0317addaceca40a6d629d9
+      size: 1926
+    params:
+      params.yaml:
+        train_model.n_estimators: 500
+        train_model.reg_lambda: 0.2
+    outs:
+    - path: ./models/
+      hash: md5
+      md5: 9b1e7a90e0a98e491850483a16e81817.dir
+      size: 33092
+      nfiles: 1

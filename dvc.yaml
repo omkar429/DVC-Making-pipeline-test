@@ -11,13 +11,13 @@ stages:
  
 
   train_model:
-    cmd: python ./src/modeling/train.py /data/processed/train.csv /models/ /params.yaml
+    cmd: python ./src/modeling/train.py ./data/processed/train.csv ./models/ 
     deps:
     - ./src/modeling/train.py
-    - /data/processed/train.csv
+    - ./data/processed/train.csv
     - ./params.yaml
     params:
     - train_model.n_estimators
     - train_model.reg_lambda
     outs:
-    - /models/
+    - ./models/

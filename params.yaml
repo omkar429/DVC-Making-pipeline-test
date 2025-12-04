@@ -4,5 +4,15 @@ make_dataset:
 
 
 train_model:
-  n_estimators: 100
+  n_estimators: 500
   reg_lambda: 0.2
+  early_stopping_rounds: 10
+
+
+
+train_test_split:
+  random_state: 50
+  test_size: 0.2
+
+
+

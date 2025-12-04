@@ -5,6 +5,8 @@ import sys
 import joblib
 import xgboost
 
+from sklearn.model_selection import train_test_split
+
 
 
 def load_data(train_path):
@@ -17,16 +19,21 @@ def split_features_traget(data):
     y = data[traget]
     return X, y
 
-def model(params):
+def models(params):
     model = xgboost.XGBClassifier(
         n_estimators=params['n_estimators'],
         reg_lambda=params['reg_lambda'],
-        
+        early_stopping_rounds=params['early_stopping_rounds'],
+        n_jobs=-1
     )
+    return model
 
 
-def train_model(model, X, y):
-    model.fit(X, y)
+def train_models(model, X, y,params):
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=params['test_size'], random_state=params['random_state'])
+    eval_set = [(X_train, y_train), (X_test, y_test)]
+    model.fit(X_train, y_train, eval_set=eval_set)
+    print(model.n_estimators)
     return model
 
 def save_model(model, output_path):
@@ -43,16 +50,17 @@ def main():
     model_output_file = sys.argv[2]
     model_output_path = home_dirr.as_posix() + model_output_file
 
-    params_file = sys.argv[3]
-    params_path = home_dirr.as_posix() + params_file
-    params_path_file = yaml.safe_load(open(params_path))['train_model']
+    params_path = home_dirr.as_posix() + '/params.yaml'
+    params_path_file = yaml.safe_load(open(params_path))
+
+    
 
     data = load_data(train_path=train_data_path)
     X, y = split_features_traget(data)
 
-    model = model(params_path_file)
+    model = models(params=params_path_file['train_model'])
 
-    train_model = train_model(model=model , X=X, y=y)
+    train_model = train_models(model=model , X=X, y=y, params=params_path_file['train_test_split'])
 
     save_model(model = train_model, output_path=model_output_path)
 
